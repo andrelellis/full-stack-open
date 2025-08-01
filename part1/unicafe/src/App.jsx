@@ -9,10 +9,9 @@ const App = () => {
   return (
     <div>
       <h1>give feedback</h1>
-      <button onClick={() => setGood(good + 1)}>good</button>
-      <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
-      <button onClick={() => setBad(bad + 1)}>bad</button>
-
+      <Button text={"good"} updater={setGood} />
+      <Button text={"neutral"} updater={setNeutral} />
+      <Button text={"bad"} updater={setBad} />
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   );
@@ -30,15 +29,29 @@ const Statistics = ({ good, neutral, bad }) => {
         <p>No feedback given</p>
       ) : (
         <>
-          <p>good {good}</p>
-          <p>neutral {neutral}</p>
-          <p>bad {bad}</p>
-          <p>all {total}</p>
-          <p>average {average}</p>
-          <p>positive {positive * 100} %</p>
+          <StatisticLine text={"good"} value={good} />
+          <StatisticLine text={"neutral"} value={neutral} />
+          <StatisticLine text={"bad"} value={bad} />
+          <StatisticLine text={"all"} value={total} />
+          <StatisticLine text={"average"} value={average} />
+          <StatisticLine text={"positive"} value={positive} />
         </>
       )}
     </>
+  );
+};
+
+const Button = ({ text, updater }) => {
+  //updater function uses a cb function that takes the previous value that is to be updated.
+  return <button onClick={() => updater((prev) => prev + 1)}>{text}</button>;
+};
+const StatisticLine = ({ text, value }) => {
+  const percent = text === "positive" ? "%" : "";
+  const valueToDisplay = text === "positive" ? value * 100 : value;
+  return (
+    <p>
+      {text} {valueToDisplay} {percent}
+    </p>
   );
 };
 
