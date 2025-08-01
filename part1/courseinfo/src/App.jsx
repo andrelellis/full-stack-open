@@ -1,20 +1,25 @@
 const App = () => {
   const course = "Half Stack application development";
-  const part1 = "Fundamentals of React";
-  const exercises1 = 10;
-  const part2 = "Using props to pass data";
-  const exercises2 = 7;
-  const part3 = "State of a component";
-  const exercises3 = 14;
+  const part1 = {
+    name: "Fundamentals of React",
+    exercises: 10,
+  };
+  const part2 = {
+    name: "Using props to pass data",
+    exercises: 7,
+  };
+  const part3 = {
+    name: "State of a component",
+    exercises: 14,
+  };
+
+  const exerciseTotal = part1.exercises + part2.exercises + part3.exercises;
 
   return (
     <div>
       <Header course={course} />
-      <Content
-        parts={[part1, part2, part3]}
-        exercises={[exercises1, exercises2, exercises3]}
-      />
-      <Total exerciseTotal={exercises1 + exercises2 + exercises3} />
+      <Content parts={[part1, part2, part3]} />
+      <Total exerciseTotal={exerciseTotal} />
     </div>
   );
 };
@@ -24,9 +29,9 @@ const Header = ({ course }) => {
 };
 
 // part and exercises arrays must have same length and be ordered
-const Content = ({ parts, exercises }) => {
-  const content = parts.map((part, index) => (
-    <Part key={index} name={part} numOfExercises={exercises[index]}></Part>
+const Content = ({ parts }) => {
+  const content = parts.map(({ name, exercises }, index) => (
+    <Part key={index} name={name} numOfExercises={exercises}></Part>
   ));
   return <>{content}</>;
 };
