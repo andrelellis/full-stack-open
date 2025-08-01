@@ -22,16 +22,25 @@ const App = () => {
 const Header = ({ course }) => {
   return <h1>{course}</h1>;
 };
+
+// part and exercises arrays must have same length and be ordered
 const Content = ({ parts, exercises }) => {
   const content = parts.map((part, index) => (
-    <p key={index}>
-      {part} {exercises[index]}
-    </p>
+    <Part key={index} name={part} numOfExercises={exercises[index]}></Part>
   ));
   return <>{content}</>;
 };
+
 const Total = ({ exerciseTotal }) => {
   return <p>Number of exercises {exerciseTotal}</p>;
+};
+
+const Part = ({ name, numOfExercises }) => {
+  return (
+    <p>
+      {name} {numOfExercises}
+    </p>
+  );
 };
 
 export default App;
