@@ -14,9 +14,24 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
 
+  const initialVotes = {};
+  anecdotes.forEach((quote, index) => (initialVotes[index] = 0));
+  // eg. votes = {0: 1, 1: 3, 2: 4, 3: 2}
+
+  const [votes, setVotes] = useState(initialVotes);
+
   return (
     <>
       <div>{anecdotes[selected]}</div>
+      <button
+        onClick={() => {
+          const newVotes = { ...votes };
+          newVotes[selected] += 1;
+          setVotes(newVotes);
+        }}
+      >
+        vote
+      </button>
       <button
         onClick={() =>
           setSelected(Math.floor(Math.random() * anecdotes.length))
