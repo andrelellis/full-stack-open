@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import personServices from "./services/persons";
 
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
 
 import { isDuplicateName } from "./helpers";
-
-const dbURL = "http://localhost:3001/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -16,17 +15,16 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    axios.get(dbURL).then((response) => {
-      setPersons(response.data);
+    personServices.getAll().then((allPersons) => {
+      setPersons(allPersons);
     });
   }, []);
 
   // State Functions
   const addPerson = (newPerson) => {
-    axios.post(dbURL, newPerson).then((response) => {
-      console.log(response.data);
-      setPersons([...persons, response.data]);
-    });
+    personServices
+      .createOne(newPerson)
+      .then((newEntry) => setPersons([...persons, newEntry]));
   };
 
   const handleFilterChange = (event) => {
