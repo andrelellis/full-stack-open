@@ -20,8 +20,23 @@ const App = () => {
 
   const [votes, setVotes] = useState(initialVotes);
 
+  console.log("votes: ", votes);
+  let maxVotes = 0;
+  let mostVotedQuote = "";
+
+  for (const key in votes) {
+    if (votes.hasOwnProperty(key)) {
+      // >= means the most recent quote to tie for top votes is displayed.
+      if (votes[key] >= maxVotes) {
+        maxVotes = votes[key];
+        mostVotedQuote = anecdotes[key];
+      }
+    }
+  }
+
   return (
     <>
+      <h1>Anecdote of the day</h1>
       <div>{anecdotes[selected]}</div>
       <button
         onClick={() => {
@@ -39,6 +54,13 @@ const App = () => {
       >
         next anecdote
       </button>
+      {!!maxVotes && (
+        <>
+          <h2>Anecdote with most votes</h2>
+          <p>{mostVotedQuote}</p>
+          <p>has {maxVotes} votes</p>
+        </>
+      )}
     </>
   );
 };
