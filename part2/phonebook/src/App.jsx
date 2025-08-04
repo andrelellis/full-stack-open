@@ -27,6 +27,16 @@ const App = () => {
       .then((newEntry) => setPersons([...persons, newEntry]));
   };
 
+  const updatePerson = (updatedPerson) => {
+    personService.updateOne(updatedPerson).then((updatedEntry) => {
+      setPersons(
+        persons.map((person) =>
+          person.id === updatedEntry.id ? updatedEntry : person
+        )
+      );
+    });
+  };
+
   const deletePerson = (id) => {
     personService.deleteOne(id).then((deletedEntry) => {
       setPersons(
@@ -52,8 +62,18 @@ const App = () => {
     event.preventDefault();
 
     if (isDuplicateName(newName, persons)) {
-      resetForm();
-      return window.alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const outdatedPerson = persons.filter(
+          (person) => person.name === newName
+        )[0];
+        const updatedPerson = { ...outdatedPerson, number: newNumber };
+        updatePerson(updatedPerson);
+      }
+      return resetForm();
     }
     const newPerson = { name: newName, number: newNumber };
     addPerson(newPerson);
