@@ -7,6 +7,8 @@ import Persons from "./Persons";
 
 import { isDuplicateName } from "./helpers";
 
+const dbURL = "http://localhost:3001/persons";
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
@@ -14,14 +16,17 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
+    axios.get(dbURL).then((response) => {
       setPersons(response.data);
     });
   }, []);
 
   // State Functions
   const addPerson = (newPerson) => {
-    setPersons([...persons, newPerson]);
+    axios.post(dbURL, newPerson).then((response) => {
+      console.log(response.data);
+      setPersons([...persons, response.data]);
+    });
   };
 
   const handleFilterChange = (event) => {
@@ -29,14 +34,14 @@ const App = () => {
   };
 
   // Form Functions
+  const resetForm = () => {
+    setNewName("");
+    setNewNumber("");
+    document.getElementById("nameInput").focus();
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    const resetForm = () => {
-      setNewName("");
-      setNewNumber("");
-      document.getElementById("nameInput").focus();
-    };
 
     if (isDuplicateName(newName, persons)) {
       resetForm();
