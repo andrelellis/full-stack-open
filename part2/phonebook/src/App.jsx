@@ -1,4 +1,8 @@
 import { useState } from "react";
+import Filter from "./Filter";
+import PersonForm from "./PersonForm";
+import Persons from "./Persons";
+
 import { isDuplicateName } from "./helpers";
 
 const App = () => {
@@ -24,6 +28,13 @@ const App = () => {
   // Form Functions
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    const resetForm = () => {
+      setNewName("");
+      setNewNumber("");
+      document.getElementById("nameInput").focus();
+    };
+
     if (isDuplicateName(newName, persons)) {
       resetForm();
       return window.alert(`${newName} is already added to phonebook`);
@@ -41,41 +52,22 @@ const App = () => {
     setNewNumber(event.target.value);
   };
 
-  const resetForm = () => {
-    setNewName("");
-    setNewNumber("");
-    document.getElementById("nameInput").focus();
-  };
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <p>
-        filter shown with <input value={filter} onChange={handleFilterChange} />
-      </p>
+      <Filter filter={filter} changeHandler={handleFilterChange} />
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          name:{" "}
-          <input id={"nameInput"} value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {persons
-        .filter((person) =>
-          person.name.toLowerCase().includes(filter.toLowerCase())
-        )
-        .map((person) => (
-          <p key={person.name}>
-            {person.name} {person.number}
-          </p>
-        ))}
+      <h3>Add a new</h3>
+      <PersonForm
+        name={newName}
+        number={newNumber}
+        nameChangeHandler={handleNameChange}
+        numberChangeHandler={handleNumberChange}
+        submitHandler={handleSubmit}
+      />
+
+      <h3>Numbers</h3>
+      <Persons personList={persons} filter={filter} />
     </div>
   );
 };
