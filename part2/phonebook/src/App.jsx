@@ -1,13 +1,22 @@
 import { useState } from "react";
+import { isDuplicateName } from "./helpers";
 
 const App = () => {
   const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
   const [newName, setNewName] = useState("");
 
+  const addPerson = (newPerson) => {
+    setPersons([...persons, newPerson]);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (isDuplicateName(newName, persons)) {
+      setNewName("");
+      return window.alert(`${newName} is already added to phonebook`);
+    }
     const newPerson = { name: newName };
-    setPersons([...persons, newPerson]);
+    addPerson(newPerson);
     setNewName("");
   };
 
