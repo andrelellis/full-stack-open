@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import personServices from "./services/persons";
+import personService from "./services/persons";
 
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
@@ -15,16 +15,26 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    personServices.getAll().then((allPersons) => {
-      setPersons(allPersons);
+    personService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
 
   // State Functions
   const addPerson = (newPerson) => {
-    personServices
+    personService
       .createOne(newPerson)
       .then((newEntry) => setPersons([...persons, newEntry]));
+  };
+
+  const deletePerson = (id) => {
+    personService.deleteOne(id).then((deletedEntry) => {
+      setPersons(
+        persons.filter((person) => {
+          return person.id !== deletedEntry.id;
+        })
+      );
+    });
   };
 
   const handleFilterChange = (event) => {
@@ -58,6 +68,11 @@ const App = () => {
     setNewNumber(event.target.value);
   };
 
+  const handleDelete = (id) => {
+    const person = persons.filter((person) => person.id === id)[0];
+    if (window.confirm(`Delete ${person.name}?`)) deletePerson(id);
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -73,7 +88,11 @@ const App = () => {
       />
 
       <h3>Numbers</h3>
-      <Persons personList={persons} filter={filter} />
+      <Persons
+        personList={persons}
+        filter={filter}
+        handleDelete={handleDelete}
+      />
     </div>
   );
 };
