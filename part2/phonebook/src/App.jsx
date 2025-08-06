@@ -5,6 +5,7 @@ import personService from "./services/persons";
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
+import Notification from "./Notification";
 
 import { isDuplicateName } from "./helpers";
 
@@ -13,6 +14,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -20,15 +22,24 @@ const App = () => {
     });
   }, []);
 
+  const notify = (message) => {
+    setMessage(message);
+    setTimeout(() => {
+      setMessage("");
+    }, 5000);
+  };
+
   // State Functions
   const addPerson = (newPerson) => {
-    personService
-      .createOne(newPerson)
-      .then((newEntry) => setPersons([...persons, newEntry]));
+    personService.createOne(newPerson).then((newEntry) => {
+      notify(`added ${newEntry.name}`);
+      setPersons([...persons, newEntry]);
+    });
   };
 
   const updatePerson = (updatedPerson) => {
     personService.updateOne(updatedPerson).then((updatedEntry) => {
+      notify(`Updated ${updatedEntry.name}`);
       setPersons(
         persons.map((person) =>
           person.id === updatedEntry.id ? updatedEntry : person
@@ -39,6 +50,7 @@ const App = () => {
 
   const deletePerson = (id) => {
     personService.deleteOne(id).then((deletedEntry) => {
+      notify(`deleted ${deletedEntry.name}`);
       setPersons(
         persons.filter((person) => {
           return person.id !== deletedEntry.id;
@@ -96,6 +108,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter filter={filter} changeHandler={handleFilterChange} />
 
       <h3>Add a new</h3>
