@@ -12,7 +12,15 @@ const createOne = (newPerson) => {
 const updateOne = (updatedPerson) => {
   return axios
     .put(`${baseUrl}/${updatedPerson.id}`, updatedPerson)
-    .then((response) => response.data);
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return {
+        status: "error",
+        message: `information for ${updatedPerson.name} has already been removed from server`,
+      };
+    });
 };
 
 const deleteOne = (id) => {

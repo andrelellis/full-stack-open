@@ -38,14 +38,23 @@ const App = () => {
   };
 
   const updatePerson = (updatedPerson) => {
-    personService.updateOne(updatedPerson).then((updatedEntry) => {
-      notify(`Updated ${updatedEntry.name}`);
-      setPersons(
-        persons.map((person) =>
-          person.id === updatedEntry.id ? updatedEntry : person
-        )
-      );
-    });
+    personService
+      .updateOne(updatedPerson)
+      .then((updatedEntry) => {
+        if (updatedEntry.status === "error") {
+          throw new Error(updatedEntry.message);
+        }
+        notify(`Updated ${updatedEntry.name}`);
+        setPersons(
+          persons.map((person) =>
+            person.id === updatedEntry.id ? updatedEntry : person
+          )
+        );
+      })
+      .catch((error) => {
+        notify(`${error.message}`);
+        setPersons(persons.filter((person) => person.id !== updatedPerson.id));
+      });
   };
 
   const deletePerson = (id) => {
